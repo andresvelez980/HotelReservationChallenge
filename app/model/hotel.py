@@ -54,7 +54,54 @@ class Reservation:
         )
 
 
-# TODO: Implement Room class here
+class Room:
+    def __init__(self, number: int, type_: str, price_per_night: float):
+        self.number = number
+        self.type_ = type_
+        self.price_per_night = price_per_night
+        self.availability: dict = {}
+
+        self._init_availability()
+
+    def _init_availability(self):
+        today = datetime.now().date()
+        for i in range(365):
+            self.availability[today + timedelta(days=i)] = None
+
+    def book(self, reservation_id: str, check_in, check_out):
+        current = check_in
+
+        while current < check_out:
+            if self.availability.get(current) is not None:
+                room_not_available_error()
+            current += timedelta(days=1)
+
+        current = check_in
+        while current < check_out:
+            self.availability[current] = reservation_id
+            current += timedelta(days=1)
+
+    def release(self, reservation_id: str):
+        released = False
+        for d, saved_id in self.availability.items():
+            if saved_id == reservation_id:
+                self.availability[d] = None
+                released = True
+        if not released:
+            reservation_not_found_error()
+
+    def update_booking(self, reservation_id: str, check_in, check_out):
+        for d in self.availability:
+            if self.availability[d] == reservation_id:
+                self.availability[d] = None
+
+        current = check_in
+        while current < check_out:
+            if self.availability.get(current) is not None:
+                room_not_available_error()
+            else:
+                self.availability[current] = reservation_id
+            current += timedelta(days=1)
 
 
 # TODO: Implement Hotel class here
