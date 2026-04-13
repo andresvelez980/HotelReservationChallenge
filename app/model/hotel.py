@@ -7,7 +7,19 @@ from app.services.util import (generate_unique_id, date_lower_than_today_error,
     room_not_found_error, room_already_exists_error)
 
 
-# TODO: Implement Guest class here
+from dataclasses import dataclass
+
+@dataclass
+class Guest:
+    REGULAR = "regular"
+    VIP = "vip"
+
+    name: str
+    email: str
+    type_: str = REGULAR
+
+    def __str__(self) -> str:
+        return f"Guest {self.name} ({self.email}) of type {self.type_}"
 
 
 # TODO: Implement Reservation class here
